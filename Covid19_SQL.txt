@@ -1,0 +1,117 @@
+use Covid_19
+--Q1.1- Weekly evolution of number of confirmed cases, recovered cases, deaths, tests. For instance,
+--your dashboard should be able to compare Week 3 of May with Week 2 of August 
+with CTE as 
+(select datepart(month,dates) as month_no,datename(month,dates) as Month_,case when day(dates)<8 then 'week1'
+when day(dates)<15 then 'week2'
+when day(dates)<22 then 'week3'
+else 'week4' end as week_,
+sum(confirmed) as Total_Confirmed,
+sum(recovered) as Total_Recovered,
+sum(deceased) as Total_Deaths,
+sum(tested) as Total_Tests from date_delta
+Group by
+datepart(month,dates),
+datename(month,dates),case when day(dates)<8 then 'week1'
+when day(dates)<15 then 'week2'
+when day(dates)<22 then 'week3'
+else 'week4' end)
+select month_,week_,Total_Confirmed,Total_Recovered,Total_Deaths,Total_Tests from CTE
+order by month_no,week_
+
+--1.2 - Let’s call `testing ratio(tr) = (number of tests done) / (population)`, 
+--now categorise every district in one of the following categories:
+-- Category A: 0.05 ≤ tr ≤ 0.1
+-- Category B: 0.1 < tr ≤ 0.3
+-- Category C: 0.3 < tr ≤ 0.5
+-- Category D: 0.5 < tr ≤ 0.75
+--Category E: 0.75 < tr ≤ 1.0
+--Now perform an analysis of number of deaths across all category.
+--Example, what was the number / % of deaths in Category A district as compared for Category E districts.
+
+
+WITH CTE as
+(
+SELECT a.*, cast((tested/cast(population as decimal)) as decimal(3,2))as tr
+FROM districts_total a 
+join districts_meta b
+on a.districts=b.districts and a.statecode=b.statecode
+WHERE population !=0
+),
+CTE1 as
+(
+SELECT *, 
+CASE 
+	WHEN (tr>=0.05) AND (tr<=0.1) THEN 'A'
+	WHEN (tr>0.1) AND (tr<=0.3) THEN 'B'
+	WHEN (tr>0.3) AND (tr<=0.5) THEN 'C'
+	WHEN (tr>0.5) AND (tr<=0.75) THEN 'D'
+	WHEN (tr>0.75) AND (tr<=1) THEN 'E'
+END AS category
+From CTE
+)
+SELECT category,sum(deceased) as number_of_deaths
+FROM CTE1
+WHERE category is not null
+group by category
+
+--Q2-Generate 2 - 3 insights that is very difficult to observe
+--Q2.1 - Comparison of States for Percentage of population vaccinated against covid19
+select a.statecode, 
+cast(((vaccinated1/cast(population as decimal))) as decimal(5,2)) as Partly_vaccinated,
+cast(((vaccinated2/cast(population as decimal))) as decimal(7,2)) as Fully_vaccinated
+from total a join meta b
+on a.statecode = b.statecode
+
+--2.2 - To find the top 10 states that have max confirmed cases in the last month
+select statecode,Total_confirmed_cases from
+(select top(10) b.statecode,datename(MONTH,max(b.dates)) as Last_Month,sum(cast(a.confirmed as bigint)) as Total_Confirmed_cases from delta a
+join date_delta b on a.Statecode =b.statecode
+group by b.statecode
+order by Total_Confirmed_cases desc) as c
+
+
+--Q3- Compare delta7 confirmed cases with respect to vaccination
+
+select month_,Confirmed_cases,Vaccinated from
+(select datepart(month,dates) as mon_num,datename(month,dates) as month_,sum(confirmed) as Confirmed_cases,sum(cast(vaccinated1 as bigint))
+as Vaccinated from date_delta7
+group by datename(month,dates),datepart(month,dates))as c
+order by mon_num
+
+select month_,Confirmed_cases,Vaccinated1,Vaccinated2 from
+(select datepart(month,dates) as mon_num,datename(month,dates) as month_,sum(confirmed) as Confirmed_cases,sum(cast(vaccinated1 as bigint))
+as Vaccinated1,sum(cast(vaccinated2 as bigint)) as Vaccinated2 from date_delta7
+group by datename(month,dates),datepart(month,dates))as c
+order by mon_num
+ 
+--4.1//Make at least 2 such KPI that presents the severity of case in different states 
+--(example: Any numerical measure to comment on how severe were the cases in Bihar as compared to that of Kerala)
+
+select statecode,sum(confirmed) as Confirmed,
+sum(recovered) as Recovered,
+sum(deceased) as Death from total
+where statecode in ('DL','KL')
+group by statecode
+
+--4.2//Make at least 2 such KPI that presents the severity of case in different states 
+--(example: Any numerical measure to comment on how severe were the cases in Bihar as compared to that of Kerala)
+
+select statecode,sum(confirmed) as Confirmed,
+sum(recovered) as Recovered,
+sum(deceased) as Death from total
+where statecode in ('MP','UP')
+group by statecode
+
+--5.Categorise total number of confirmed cases in a state by Months 
+--and come up with that one month which was worst for India in terms 
+--of number of cases
+select statecode,month_,total_confirmed_cases from
+(select statecode,month_,Total_confirmed_cases,DENSE_RANK() over (partition by statecode order by total_confirmed_cases desc) as rankk from
+(select statecode,datename(month,dates) as month_,sum(confirmed) as Total_confirmed_cases
+from date_delta
+group by statecode,datename(month,dates)) as c)as d
+where rankk=1
+
+
+

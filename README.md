@@ -1,9 +1,11 @@
                                            --Covid-19 Data Analysis--
                                               
 --Introduction--
+
 "Covid-19-Data-Analysis" is a data analysis project focused on studying the impact and trends of the Covid-19 pandemic. The project aims to analyze and visualize Covid-19 data from various reliable sources, such as public health organizations and official government reports.
 
 --Problem Aimed to Solve--
+
 Covid 19 second wave was much more devastating for India than the first wave, with shortages of hospital beds, vaccines, oxygen cylinders, and other medical supplies. Analyzing the covid19 data will help better prepare to deal with future threats.
 
 --Data Description--
@@ -16,10 +18,12 @@ Covid 19 second wave was much more devastating for India than the first wave, wi
 
 --Methodolgy--
 
+The project involves collecting and processing Covid-19 data, including the number of confirmed cases, deaths, recoveries, testing rates, and other relevant metrics. It utilizes data analysis techniques and statistical modeling to gain insights into the spread of the virus, its impact on different regions or demographics, and the effectiveness of mitigation strategies.
+
 
 ![Screenshot (735)](https://github.com/patel-ankit1999/Covid-19-Data-Analysis-/assets/125917403/84ab6127-1965-4ba1-91f9-60a2fb32340d)
 
-The project involves collecting and processing Covid-19 data, including the number of confirmed cases, deaths, recoveries, testing rates, and other relevant metrics. It utilizes data analysis techniques and statistical modeling to gain insights into the spread of the virus, its impact on different regions or demographics, and the effectiveness of mitigation strategies.
+--Dashboard Creation--
 
 ![Screenshot (736)](https://github.com/patel-ankit1999/Covid-19-Data-Analysis-/assets/125917403/50235b84-fcf9-4ecf-b3b2-32a3fb2f42f1)
                                                                    Dashboard

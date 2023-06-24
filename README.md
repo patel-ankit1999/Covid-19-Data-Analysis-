@@ -22,7 +22,7 @@ Covid 19 second wave was much more devastating for India than the first wave, wi
 The project involves collecting and processing Covid-19 data, including the number of confirmed cases, deaths, recoveries, testing rates, and other relevant metrics. It utilizes data analysis techniques and statistical modeling to gain insights into the spread of the virus, its impact on different regions or demographics, and the effectiveness of mitigation strategies.
 
 ![Screenshot (736)](https://github.com/patel-ankit1999/Covid-19-Data-Analysis-/assets/125917403/50235b84-fcf9-4ecf-b3b2-32a3fb2f42f1)
-                                                    Dashboard
+                                                                   Dashboard
 
 --Results--
 
